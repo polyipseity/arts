@@ -10,7 +10,7 @@ from dataclasses import dataclass as _dc
 from functools import wraps as _wraps
 from itertools import cycle as _cycle
 from logging import INFO as _INFO, basicConfig as _basicConfig
-from sys import argv as _argv, modules as _mods
+from sys import argv as _argv
 from typing import Callable as _Call, Sequence as _Seq, final as _fin
 
 
@@ -53,9 +53,7 @@ async def main(args: Arguments):
 
 
 def parser(parent: _Call[..., _ArgParser] | None = None):
-    prog0 = _mods[__name__].__package__
-    prog = prog0 if prog0 else __name__
-    del prog0
+    prog = __package__ or __name__
 
     parser = (_ArgParser if parent is None else parent)(
         prog=f"python -m {prog}",
