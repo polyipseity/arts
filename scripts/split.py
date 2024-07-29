@@ -1,4 +1,3 @@
-# -*- coding: UTF-8 -*-
 from anyio import Path as _Path, open_file as _open_f
 from argparse import (
     ArgumentParser as _ArgParser,
