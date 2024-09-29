@@ -8,6 +8,7 @@ from asyncio import gather as _gather, run as _run
 from asyncstdlib import enumerate as _aenumerate
 from dataclasses import dataclass as _dc
 from functools import partial as _partial, wraps as _wraps
+from itertools import cycle as _cycle
 from logging import INFO as _INFO, basicConfig as _basicConfig
 from sys import argv as _argv
 from typing import Callable as _Call, Sequence as _Seq, final as _fin
@@ -44,11 +45,21 @@ async def main(args: Arguments):
                     yield chunk
                     chunk = await file.read(_SPLIT_SIZE)
 
+            count = 0
             async for count, chunk in _aenumerate(chunks(), 1):
                 async with await _open_f(
                     "{}.{:03}".format(path, count), mode="wb"
                 ) as split:
                     await split.write(chunk)
+
+            for count, _ in enumerate(_cycle((None,)), count + 1):
+                try:
+                    old_file = await _Path("{}.{:03}".format(path, count)).resolve(
+                        strict=True
+                    )
+                except FileNotFoundError:
+                    break
+                await old_file.unlink(missing_ok=False)
 
     await _gather(*map(split, args.inputs))
 
