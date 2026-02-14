@@ -10,7 +10,8 @@ from functools import wraps as _wraps
 from itertools import cycle as _cycle
 from logging import INFO as _INFO, basicConfig as _basicConfig
 from sys import argv as _argv
-from typing import Callable as _Call, Sequence as _Seq, final as _fin
+from collections.abc import Callable as _Call, Sequence as _Seq
+from typing import final as _fin
 
 
 @_fin
