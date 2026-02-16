@@ -1,0 +1,85 @@
+[build-system]
+requires = ["uv_build"]
+build-backend = "uv_build"
+
+[project]
+name = "arts-857de042-6481-4c22-947c-a76d12fdfb68"
+version = "0.0.0"
+requires-python = ">=3.12.0"
+description = "Arts"
+license = {file = "LICENSE.txt"}
+readme = "README.md"
+dependencies = [
+  "anyio>=4.12.0",
+  "asyncstdlib>=3.13.0",
+]
+
+[project.scripts]
+
+[project.urls]
+repository = "https://github.com/polyipseity/arts.git"
+
+[dependency-groups]
+dev = [
+  "hypothesis>=6.151.0",
+  "prek>=0.3.0",
+  "pyright>=1.1.408",
+  "pytest>=9.0.0",
+  "pytest-asyncio>=1.3.0",
+  "pytest-cov>=7.0.0",
+  "pytest-xdist>=3.8.0",
+  "ruff>=0.15.0",
+  "rumdl>=0.1.20",
+]
+
+[tool.pyright]
+exclude = [
+  "**/node_modules",
+  "**/__pycache__",
+  "**/.*",
+  ".venv",
+]
+typeCheckingMode = "strict"
+venv = ".venv"
+venvPath = "."
+pythonPlatform = "All"
+pythonVersion = "3.12"
+deprecateTypingAliases = true
+enableReachabilityAnalysis = true
+strictDictionaryInference = true
+strictListInference = true
+strictSetInference = true
+
+[[tool.pyright.executionEnvironments]]
+extraPaths = ["."]
+reportPrivateUsage = "none"
+root = "tests"
+
+[[tool.pyright.executionEnvironments]]
+root = "."
+
+[tool.pytest.ini_options]
+addopts = ["--cov=./", "--cov-report=term-missing", "--dist=loadscope", "-n=auto", "--strict-markers"]
+testpaths = ["tests"]
+python_files = "test_*.py"
+
+[tool.ruff]
+line-length = 88
+
+[tool.ruff.lint]
+# Enable Pylint-derived rule that disallows imports outside module top-level
+# (import-outside-top-level / PLC0415). Ruff 0.12.0+ provides this rule.
+extend-select = ["I", "PLC0415"]
+
+# rumdl (Markdown linter/formatter) configuration - prefer storing in pyproject
+# so tools discover it when running from subdirectories.
+[tool.rumdl]
+extends =  ".rumdl.toml" # redirect to .rumdl.toml in the same directory
+
+[tool.uv]
+required-version = ">=0.10.0,<0.11.0"
+
+[tool.uv.build-backend]
+# Do not include any packages in the build, as this project is only a collection of tools and scripts.
+module-name = []
+source-include = ["py.typed"]
