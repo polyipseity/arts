@@ -1,3 +1,11 @@
+"""Split large files into fixed-size chunks and provide a CLI parser.
+
+This module exposes a small CLI-friendly API used by the package tests:
+- `Arguments`: dataclass holding input path(s)
+- `main`: coroutine that splits files concurrently into numbered parts
+- `parser`: returns an `argparse.ArgumentParser` with an async `invoke` adapter
+"""
+
 from argparse import (
     ONE_OR_MORE as _ONE_OR_MORE,
 )
@@ -24,6 +32,8 @@ from anyio import Path as _Path
 from anyio import open_file as _open_f
 from asyncstdlib import enumerate as _aenumerate
 
+__all__ = ("Arguments", "main", "parser")
+
 _SPLIT_SIZE = 10 * 1024**2  # 10 MiB
 
 
@@ -40,17 +50,37 @@ _SPLIT_SIZE = 10 * 1024**2  # 10 MiB
     slots=True,
 )
 class Arguments:
+    """Immutable container for the script's command-line inputs.
+
+    Attributes:
+        inputs: Sequence of `anyio.Path` objects to process.
+    """
+
     inputs: _Seq[_Path]
 
     def __post_init__(self):
+        """Normalize `inputs` into an immutable tuple after construction."""
         object.__setattr__(self, "inputs", tuple(self.inputs))
 
 
 async def main(args: Arguments):
+    """Split each input file into fixed-size chunk files concurrently.
+
+    The function spawns a per-path task that writes numbered chunk files
+    using the `_SPLIT_SIZE` constant.
+    """
+
     async def split(path: _Path):
+        """Split a single file into sequentially numbered binary chunks.
+
+        Output files are named `"{orig}.{NNN}"` where `NNN` is a three-digit
+        sequence number starting at 001. Any previously-existing trailing
+        chunk files beyond the last used index are removed.
+        """
         async with await path.open(mode="rb") as file:
 
             async def chunks():
+                """Asynchronously yield successive binary chunks from the open file."""
                 chunk = await file.read(_SPLIT_SIZE)
                 while chunk:
                     yield chunk
@@ -76,6 +106,11 @@ async def main(args: Arguments):
 
 
 def parser(parent: _Call[..., _ArgParser] | None = None):
+    """Create and return an `ArgumentParser` configured for this module.
+
+    The parser registers an async `invoke` function on the parsed namespace
+    that resolves input paths and calls `main` with a populated `Arguments`.
+    """
     prog = __package__ or __name__
 
     parser = (_ArgParser if parent is None else parent)(
@@ -95,6 +130,7 @@ def parser(parent: _Call[..., _ArgParser] | None = None):
 
     @_wraps(main)
     async def invoke(args: _NS):
+        """ArgumentParser `invoke` adapter: resolve inputs and call `main`."""
         await main(
             Arguments(
                 inputs=await _gather(
