@@ -5,7 +5,7 @@ Commands you will use frequently.
 - Run the test suite (recommended):
 
   ```bash
-  python -m pytest
+  uv run -m pytest
   ```
 
 - Run linters / type checks:

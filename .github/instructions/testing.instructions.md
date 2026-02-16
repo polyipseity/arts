@@ -18,19 +18,19 @@ Common commands
 - Run full test suite:
 
   ```bash
-  python -m pytest
+  uv run -m pytest
   ```
 
 - Run a single test file:
 
   ```bash
-  python -m pytest tests/test_docstrings.py
+  uv run -m pytest tests/test_docstrings.py
   ```
 
 - Run coverage report (already included in default `addopts`):
 
   ```bash
-  python -m pytest
+  uv run -m pytest
   ```
 
 Guidelines
