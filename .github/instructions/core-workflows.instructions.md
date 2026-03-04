@@ -8,6 +8,8 @@ Commands you will use frequently.
   uv run -m pytest
   ```
 
+  When covering asynchronous behaviour, decorate tests with `@pytest.mark.anyio` and rely on AnyIO/Asyncer helpers.
+
 - Run linters / type checks:
 
   ```bash
