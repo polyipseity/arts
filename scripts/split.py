@@ -7,31 +7,18 @@ This module exposes a small CLI-friendly API used by the package tests:
 - `parser`: returns an `argparse.ArgumentParser` with an async `invoke` adapter
 """
 
-from argparse import (
-    ONE_OR_MORE as _ONE_OR_MORE,
-)
-from argparse import (
-    ArgumentParser as _ArgParser,
-)
-from argparse import (
-    Namespace as _NS,
-)
-from asyncio import gather as _gather
-from asyncio import run as _run
-from collections.abc import Callable as _Call
-from collections.abc import Sequence as _Seq
-from dataclasses import dataclass as _dc
-from functools import partial as _partial
-from functools import wraps as _wraps
-from itertools import cycle as _cycle
-from logging import INFO as _INFO
-from logging import basicConfig as _basicConfig
-from sys import argv as _argv
-from typing import final as _fin
+from argparse import ONE_OR_MORE, ArgumentParser, Namespace
+from asyncio import gather, run
+from collections.abc import Callable, Sequence
+from dataclasses import dataclass
+from functools import partial, wraps
+from itertools import cycle
+from logging import INFO, basicConfig
+from sys import argv
+from typing import final
 
-from anyio import Path as _Path
-from anyio import open_file as _open_f
-from asyncstdlib import enumerate as _aenumerate
+from anyio import Path, open_file
+from asyncstdlib import enumerate as aenumerate
 
 """Public symbols exported by this module."""
 __all__ = ("Arguments", "main", "parser")
@@ -40,8 +27,8 @@ __all__ = ("Arguments", "main", "parser")
 _SPLIT_SIZE = 10 * 1024**2  # 10 MiB
 
 
-@_fin
-@_dc(
+@final
+@dataclass(
     init=True,
     repr=True,
     eq=True,
@@ -59,7 +46,7 @@ class Arguments:
         inputs: Sequence of `anyio.Path` objects to process.
     """
 
-    inputs: _Seq[_Path]
+    inputs: Sequence[Path]
 
     def __post_init__(self):
         """Normalize `inputs` into an immutable tuple after construction."""
@@ -73,7 +60,7 @@ async def main(args: Arguments):
     using the `_SPLIT_SIZE` constant.
     """
 
-    async def split(path: _Path):
+    async def split(path: Path):
         """Split a single file into sequentially numbered binary chunks.
 
         Output files are named `"{orig}.{NNN}"` where `NNN` is a three-digit
@@ -90,25 +77,25 @@ async def main(args: Arguments):
                     chunk = await file.read(_SPLIT_SIZE)
 
             count = 0
-            async for count, chunk in _aenumerate(chunks(), 1):
-                async with await _open_f(
+            async for count, chunk in aenumerate(chunks(), 1):
+                async with await open_file(
                     "{}.{:03}".format(path, count), mode="wb"
                 ) as split:
                     await split.write(chunk)
 
-            for count, _ in enumerate(_cycle((None,)), count + 1):
+            for count, _ in enumerate(cycle((None,)), count + 1):
                 try:
-                    old_file = await _Path("{}.{:03}".format(path, count)).resolve(
+                    old_file = await Path("{}.{:03}".format(path, count)).resolve(
                         strict=True
                     )
                 except FileNotFoundError:
                     break
                 await old_file.unlink(missing_ok=False)
 
-    await _gather(*map(split, args.inputs))
+    await gather(*map(split, args.inputs))
 
 
-def parser(parent: _Call[..., _ArgParser] | None = None):
+def parser(parent: Callable[..., ArgumentParser] | None = None):
     """Create and return an `ArgumentParser` configured for this module.
 
     The parser registers an async `invoke` function on the parsed namespace
@@ -116,7 +103,7 @@ def parser(parent: _Call[..., _ArgParser] | None = None):
     """
     prog = __package__ or __name__
 
-    parser = (_ArgParser if parent is None else parent)(
+    parser = (ArgumentParser if parent is None else parent)(
         prog=f"python -m {prog}",
         description="split file(s)",
         add_help=True,
@@ -126,19 +113,19 @@ def parser(parent: _Call[..., _ArgParser] | None = None):
     parser.add_argument(
         "inputs",
         action="store",
-        nargs=_ONE_OR_MORE,
-        type=_Path,
+        nargs=ONE_OR_MORE,
+        type=Path,
         help="sequence of input(s) to read",
     )
 
-    @_wraps(main)
-    async def invoke(args: _NS):
+    @wraps(main)
+    async def invoke(args: Namespace):
         """ArgumentParser `invoke` adapter: resolve inputs and call `main`."""
         await main(
             Arguments(
-                inputs=await _gather(
+                inputs=await gather(
                     *map(
-                        _partial(_Path.resolve, strict=True),
+                        partial(Path.resolve, strict=True),
                         args.inputs,
                     )
                 ),
@@ -150,7 +137,7 @@ def parser(parent: _Call[..., _ArgParser] | None = None):
 
 
 if __name__ == "__main__":
-    _basicConfig(level=_INFO)
+    basicConfig(level=INFO)
     """Parsed CLI namespace used to invoke the async entrypoint."""
-    entry = parser().parse_args(_argv[1:])
-    _run(entry.invoke(entry))
+    entry = parser().parse_args(argv[1:])
+    run(entry.invoke(entry))

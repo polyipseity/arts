@@ -7,35 +7,24 @@ Provides a small CLI-friendly API:
 - `parser`: returns an argparse.ArgumentParser with an `invoke` adapter
 """
 
-from argparse import (
-    ONE_OR_MORE as _ONE_OR_MORE,
-)
-from argparse import (
-    ArgumentParser as _ArgParser,
-)
-from argparse import (
-    Namespace as _NS,
-)
-from asyncio import gather as _gather
-from asyncio import run as _run
-from collections.abc import Callable as _Call
-from collections.abc import Sequence as _Seq
-from dataclasses import dataclass as _dc
-from functools import wraps as _wraps
-from itertools import cycle as _cycle
-from logging import INFO as _INFO
-from logging import basicConfig as _basicConfig
-from sys import argv as _argv
-from typing import final as _fin
+from argparse import ONE_OR_MORE, ArgumentParser, Namespace
+from asyncio import gather, run
+from collections.abc import Callable, Sequence
+from dataclasses import dataclass
+from functools import wraps
+from itertools import cycle
+from logging import INFO, basicConfig
+from sys import argv
+from typing import final
 
-from anyio import Path as _Path
+from anyio import Path
 
 """Public symbols exported by this module."""
 __all__ = ("Arguments", "main", "parser")
 
 
-@_fin
-@_dc(
+@final
+@dataclass(
     init=True,
     repr=True,
     eq=True,
@@ -53,7 +42,7 @@ class Arguments:
         inputs: Sequence of `anyio.Path` objects to be concatenated.
     """
 
-    inputs: _Seq[_Path]
+    inputs: Sequence[Path]
 
     def __post_init__(self):
         """Normalize `inputs` into an immutable tuple after construction."""
@@ -68,14 +57,14 @@ async def main(args: Arguments):
     found.
     """
 
-    async def unsplit(path: _Path):
+    async def unsplit(path: Path):
         """Assemble a single target file by iterating its chunk files."""
 
         async def splitPaths():
             """Yield resolved `Path` objects for each numbered chunk for `path`."""
-            for count, _ in enumerate(_cycle((None,)), 1):
+            for count, _ in enumerate(cycle((None,)), 1):
                 try:
-                    yield await _Path("{}.{:03}".format(path, count)).resolve(
+                    yield await Path("{}.{:03}".format(path, count)).resolve(
                         strict=True
                     )
                 except FileNotFoundError:
@@ -86,10 +75,10 @@ async def main(args: Arguments):
                 async with await splitPath.open(mode="rb") as split:
                     await file.write(await split.read())
 
-    await _gather(*map(unsplit, args.inputs))
+    await gather(*map(unsplit, args.inputs))
 
 
-def parser(parent: _Call[..., _ArgParser] | None = None):
+def parser(parent: Callable[..., ArgumentParser] | None = None):
     """Return an `ArgumentParser` configured for `unsplit` CLI usage.
 
     The parser registers an async `invoke` that forwards parsed inputs to
@@ -97,7 +86,7 @@ def parser(parent: _Call[..., _ArgParser] | None = None):
     """
     prog = __package__ or __name__
 
-    parser = (_ArgParser if parent is None else parent)(
+    parser = (ArgumentParser if parent is None else parent)(
         prog=f"python -m {prog}",
         description="unsplit file(s)",
         add_help=True,
@@ -107,13 +96,13 @@ def parser(parent: _Call[..., _ArgParser] | None = None):
     parser.add_argument(
         "inputs",
         action="store",
-        nargs=_ONE_OR_MORE,
-        type=_Path,
+        nargs=ONE_OR_MORE,
+        type=Path,
         help="sequence of input(s) to read",
     )
 
-    @_wraps(main)
-    async def invoke(args: _NS):
+    @wraps(main)
+    async def invoke(args: Namespace):
         """ArgumentParser `invoke` adapter — call `main` with Arguments."""
         await main(Arguments(inputs=args.inputs))
 
@@ -122,7 +111,7 @@ def parser(parent: _Call[..., _ArgParser] | None = None):
 
 
 if __name__ == "__main__":
-    _basicConfig(level=_INFO)
+    basicConfig(level=INFO)
     """Parsed CLI namespace used to invoke the async entrypoint."""
-    entry = parser().parse_args(_argv[1:])
-    _run(entry.invoke(entry))
+    entry = parser().parse_args(argv[1:])
+    run(entry.invoke(entry))
