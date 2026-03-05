@@ -33,6 +33,7 @@ from anyio import Path as _Path
 from anyio import open_file as _open_f
 from asyncstdlib import enumerate as _aenumerate
 
+"""Public symbols exported by this module."""
 __all__ = ("Arguments", "main", "parser")
 
 """Default chunk size in bytes (10 MiB) when splitting large files."""
@@ -150,5 +151,6 @@ def parser(parent: _Call[..., _ArgParser] | None = None):
 
 if __name__ == "__main__":
     _basicConfig(level=_INFO)
+    """Parsed CLI namespace used to invoke the async entrypoint."""
     entry = parser().parse_args(_argv[1:])
     _run(entry.invoke(entry))
