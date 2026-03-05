@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """Reassemble files that were previously split by `split.py`.
 
 Provides a small CLI-friendly API:

@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """Split large files into fixed-size chunks and provide a CLI parser.
 
 This module exposes a small CLI-friendly API used by the package tests:
@@ -34,6 +35,7 @@ from asyncstdlib import enumerate as _aenumerate
 
 __all__ = ("Arguments", "main", "parser")
 
+"""Default chunk size in bytes (10 MiB) when splitting large files."""
 _SPLIT_SIZE = 10 * 1024**2  # 10 MiB
 
 
