@@ -13,8 +13,8 @@ A small, self-contained Python collection of tools/tests focused on strict docum
 ## Safe startup (quick)
 
 1. Create + activate a virtual environment
-   - PowerShell: `python -m venv .venv && .\.venv\Scripts\Activate.ps1`
-   - POSIX: `python -m venv .venv && source .venv/bin/activate`
+   - PowerShell: `uv venv && .\.venv\Scripts\Activate.ps1`
+   - POSIX: `uv venv && source .venv/bin/activate`
 2. Install project and dev tools (use your environment manager):
    - Example: `uv run -m pip install -e .[dev]` (or follow your org's workflow)
 3. Run tests: `uv run -m pytest`
@@ -45,7 +45,7 @@ A small, self-contained Python collection of tools/tests focused on strict docum
 
 ## Critical workflows (commands)
 
-- Setup: `python -m venv .venv && .\\.venv\\Scripts\\Activate.ps1`
+- Setup: `uv venv && .\\.venv\\Scripts\\Activate.ps1`
 - Install: `uv run -m pip install -e .[dev]`
 - Tests: `uv run -m pytest` (defaults in `pyproject.toml` set coverage and parallel options)
 - Lint/type: `ruff check . --fix`, `pyright`, `rumdl .`
