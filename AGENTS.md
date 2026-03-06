@@ -67,4 +67,4 @@ A small, self-contained Python collection of tools/tests focused on strict docum
 
 ---
 
-For operational details and quickstart steps see the `.github/instructions/` files.
+For operational details and quickstart steps see the `.agents/instructions/` files.
