@@ -8,7 +8,6 @@ Provides a small CLI-friendly API:
 """
 
 from argparse import ONE_OR_MORE, ArgumentParser, Namespace
-from asyncio import gather, run
 from collections.abc import Callable, Sequence
 from dataclasses import dataclass
 from functools import wraps
@@ -18,6 +17,7 @@ from sys import argv
 from typing import final
 
 from anyio import Path
+from asyncer import create_task_group, runnify
 
 """Public symbols exported by this module."""
 __all__ = ("Arguments", "main", "parser")
@@ -75,7 +75,9 @@ async def main(args: Arguments):
                 async with await splitPath.open(mode="rb") as split:
                     await file.write(await split.read())
 
-    await gather(*map(unsplit, args.inputs))
+    async with create_task_group() as tg:
+        for inp in args.inputs:
+            tg.soonify(unsplit)(inp)
 
 
 def parser(parent: Callable[..., ArgumentParser] | None = None):
@@ -114,4 +116,4 @@ if __name__ == "__main__":
     basicConfig(level=INFO)
     """Parsed CLI namespace used to invoke the async entrypoint."""
     entry = parser().parse_args(argv[1:])
-    run(entry.invoke(entry))
+    runnify(entry.invoke)(entry)

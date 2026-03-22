@@ -8,16 +8,16 @@ This module exposes a small CLI-friendly API used by the package tests:
 """
 
 from argparse import ONE_OR_MORE, ArgumentParser, Namespace
-from asyncio import gather, run
 from collections.abc import Callable, Sequence
 from dataclasses import dataclass
-from functools import partial, wraps
+from functools import wraps
 from itertools import cycle
 from logging import INFO, basicConfig
 from sys import argv
 from typing import final
 
 from anyio import Path, open_file
+from asyncer import SoonValue, create_task_group, runnify
 from asyncstdlib import enumerate as aenumerate
 
 """Public symbols exported by this module."""
@@ -92,7 +92,9 @@ async def main(args: Arguments):
                     break
                 await old_file.unlink(missing_ok=False)
 
-    await gather(*map(split, args.inputs))
+    async with create_task_group() as tg:
+        for inp in args.inputs:
+            tg.soonify(split)(inp)
 
 
 def parser(parent: Callable[..., ArgumentParser] | None = None):
@@ -121,16 +123,13 @@ def parser(parent: Callable[..., ArgumentParser] | None = None):
     @wraps(main)
     async def invoke(args: Namespace):
         """ArgumentParser `invoke` adapter: resolve inputs and call `main`."""
-        await main(
-            Arguments(
-                inputs=await gather(
-                    *map(
-                        partial(Path.resolve, strict=True),
-                        args.inputs,
-                    )
-                ),
-            )
-        )
+        resolved: list[SoonValue[Path]] = []
+        async with create_task_group() as tg:
+            for inp in args.inputs:
+                soon = tg.soonify(Path.resolve)(inp, strict=True)
+                resolved.append(soon)
+
+        await main(Arguments(inputs=[r.value for r in resolved]))
 
     parser.set_defaults(invoke=invoke)
     return parser
@@ -140,4 +139,4 @@ if __name__ == "__main__":
     basicConfig(level=INFO)
     """Parsed CLI namespace used to invoke the async entrypoint."""
     entry = parser().parse_args(argv[1:])
-    run(entry.invoke(entry))
+    runnify(entry.invoke)(entry)
