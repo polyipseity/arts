@@ -5,7 +5,7 @@ build-backend = "uv_build"
 [project]
 name = "arts-857de042-6481-4c22-947c-a76d12fdfb68"
 version = "0.0.0"
-requires-python = ">=3.12.0"
+requires-python = ">=3.14.0"
 description = "Arts"
 license = {file = "LICENSE.txt"}
 readme = "README.md"

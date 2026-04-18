@@ -8,7 +8,7 @@ A small, self-contained Python collection of tools/tests focused on strict docum
 - Primary entrypoints: `pyproject.toml`, `README.md`, `tests/`
 - Test runner: `pytest` (see `tests/`)
 - Linters / checks: `ruff`, `ty`, `rumdl` (Markdown)
-- Python requirement: **3.12+** (see `pyproject.toml`)"
+- Python requirement: **3.14+** (see `pyproject.toml`)"
 
 ## Safe startup (quick)
 

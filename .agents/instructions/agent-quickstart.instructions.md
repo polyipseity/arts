@@ -4,7 +4,7 @@ A minimal checklist to get productive in this sub-repository.
 
 1. Environment
    - Create & activate a venv (see `AGENTS.md`).
-   - Use the project's Python (3.12+).
+   - Use the project's Python (3.14+).
 
 2. Install developer tools
    - Install project and dev dependencies (example): `uv run -m pip install -e .[dev]`.
