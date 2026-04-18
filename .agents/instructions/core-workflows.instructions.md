@@ -14,7 +14,7 @@ Commands you will use frequently.
 
   ```bash
   ruff check .
-  pyright
+  uv run --locked ty check
   rumdl .
   ```
 

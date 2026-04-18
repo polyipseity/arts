@@ -86,7 +86,7 @@ if __name__ == "__main__":
          return exit(1)
      ```
 
-4. **Type hints & enforcement**: Arts project enforces strict type checking with `pyright` in strict mode. Always include complete type hints:
+4. **Type hints & enforcement**: Arts project enforces strict type checking with `ty` (`[tool.ty.rules] all = "error"`). Always include complete type hints:
    - Function parameters and return types
    - Use `collections.abc.Sequence[str]` for sequences
    - Use `os.PathLike` for file paths
@@ -144,7 +144,7 @@ When writing a new script or updating an existing one:
 - [ ] Use appropriate exit codes (0, 1, 2, 3)
 - [ ] Include complete type hints on all functions and parameters
 - [ ] Test by importing `main()` directly; do not trigger the guard
-- [ ] Run `pyright`, `ruff check`, and `pytest` locally before committing
+- [ ] Run `ty check`, `ruff check`, and `pytest` locally before committing
 - [ ] Verify `tests/test_docstrings.py` and `tests/test_module_exports.py` pass
 
 ## Examples
@@ -279,4 +279,4 @@ if __name__ == "__main__":
 - Parent repository convention: `../../.agents/instructions/python-entry-points.instructions.md`
 - Testing guidance: `testing.instructions.md`
 - Module exports & docstrings: `tests/test_module_exports.py`, `tests/test_docstrings.py`
-- Type checking: `pyproject.toml` (pyright strict mode config)
+- Type checking: `pyproject.toml` (`[tool.ty]` strict config)

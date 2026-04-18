@@ -19,5 +19,5 @@ Naming & placement
 Metadata & typing
 
 - Use `pyproject.toml` for dependency and tool configuration.
-- Type-checking must pass with `pyright` (project is configured `strict`).
+- Type-checking must pass with `ty` (project uses strict rule severities).
 - When adding asynchronous modules, remember the project uses AnyIO/Asyncer; avoid importing `asyncio` directly and add the appropriate dependencies.

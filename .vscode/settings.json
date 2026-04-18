@@ -23,10 +23,10 @@
     "git rev-parse": true,
     "i": true,
     "i++": true,
-    "ty": true,
     "pytest": true,
     "ruff": true,
     "rumdl": true,
+    "ty": true,
     "type": true
   },
   "files.associations": {

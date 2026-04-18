@@ -38,4 +38,4 @@ Guidelines
 - Add tests for every bug fix or new feature.
 - Keep tests deterministic and fast; prefer fixture-driven tests.
 - When writing async tests, decorate with `@pytest.mark.anyio` and rely on AnyIO/Asyncer helpers rather than importing `asyncio` directly.
-- Ensure type checks (`pyright`) and linters (`ruff`) pass alongside tests.
+- Ensure type checks (`ty`) and linters (`ruff`) pass alongside tests.
