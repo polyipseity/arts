@@ -13,7 +13,7 @@ A minimal checklist to get productive in this sub-repository.
 3. First commands (safe)
    - `uv run -m pytest`            # run tests
    - `ruff check . --fix` # format & lint fixes
-   - `uv run --locked ty check`   # static type check
+   - `uv run --locked ty check` # static type check
    - `rumdl .`                    # markdown lint/format
 
 4. When making changes
