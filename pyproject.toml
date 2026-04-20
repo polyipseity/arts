@@ -7,7 +7,7 @@ name = "arts-857de042-6481-4c22-947c-a76d12fdfb68"
 version = "0.0.0"
 requires-python = ">=3.14.0"
 description = "Arts"
-license = {file = "LICENSE.txt"}
+license = { file = "LICENSE.txt" }
 readme = "README.md"
 dependencies = [
   "anyio>=4.12.0",
@@ -46,15 +46,18 @@ exclude = [
   "**/__pycache__",
   "**/.*",
   ".venv",
-	# self
+  # self
 ]
 
 [tool.pytest.ini_options]
-addopts = ["--cov=./", "--cov-report=term-missing", "--dist=loadscope", "-n=auto", "--strict-markers"]
-testpaths = [
-  ".agents/skills/**/tests_*",
-  "tests",
+addopts = [
+  "--cov=./",
+  "--cov-report=term-missing",
+  "--dist=loadscope",
+  "-n=auto",
+  "--strict-markers",
 ]
+testpaths = [".agents/skills/**/tests_*", "tests"]
 python_files = "test_*.py"
 
 [tool.ruff]
@@ -68,9 +71,10 @@ extend-select = ["I", "PLC0415"]
 # rumdl (Markdown linter/formatter) configuration - prefer storing in pyproject
 # so tools discover it when running from subdirectories.
 [tool.rumdl]
-extends =  ".rumdl.toml" # redirect to .rumdl.toml in the same directory
+extends = ".rumdl.toml" # redirect to .rumdl.toml in the same directory
 
 [tool.uv]
+package = false
 required-version = ">=0.9.0,<0.11.0"
 
 [tool.uv.build-backend]

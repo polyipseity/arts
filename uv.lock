@@ -17,7 +17,7 @@ wheels = [
 [[package]]
 name = "arts-857de042-6481-4c22-947c-a76d12fdfb68"
 version = "0.0.0"
-source = { editable = "." }
+source = { virtual = "." }
 dependencies = [
     { name = "anyio" },
     { name = "asyncer" },
