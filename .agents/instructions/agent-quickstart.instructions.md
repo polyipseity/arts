@@ -11,10 +11,10 @@ A minimal checklist to get productive in this sub-repository.
    - Alternatively use your org's environment manager (poetry/uv/venv).
 
 3. First commands (safe)
-   - `uv run -m pytest`            # run tests
+   - `uv run -m pytest` # run tests
    - `ruff check . --fix` # format & lint fixes
    - `uv run --locked ty check` # static type check
-   - `uv run rumdl check .`                    # markdown lint check
+   - `uv run rumdl check .` # markdown lint check
 
 4. Testing-first workflow (required)
    - Mirror source layout in tests where practical:
