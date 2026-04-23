@@ -119,6 +119,12 @@ if __name__ == "__main__":
        await main(['--input', str(tmp_path / 'test.xcf')])
    ```
 
+   Mirror entrypoint-related tests under `tests/scripts_/` and include:
+   - parser happy-path checks,
+   - parser failure-path checks,
+   - branch behavior checks for file-processing logic,
+   - module `__main__` smoke tests via shared helpers in `tests/utils.py`.
+
 ## Integration with Parent Convention
 
 This arts project inherits the parent repository's Python entry points convention. Refer to `../../.agents/instructions/python-entry-points.instructions.md` for:

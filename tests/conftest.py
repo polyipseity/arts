@@ -9,9 +9,12 @@ import pytest
 """Public API of this test configuration module (empty)."""
 __all__ = ()
 
+"""`pytest_plugins` is a special pytest variable for loading fixture modules."""
+pytest_plugins = ("tests.utils",)
+
 
 @pytest.fixture
-def anyio_backend():
+def anyio_backend() -> tuple[str, dict[str, bool]]:
     """Return the desired backend for AnyIO-based tests.
 
     Using a tuple with ``use_uvloop=True`` requests uvloop explicitly.

@@ -8,7 +8,7 @@ A small, self-contained Python collection of tools/tests focused on strict docum
 - Primary entrypoints: `pyproject.toml`, `README.md`, `tests/`
 - Test runner: `pytest` (see `tests/`)
 - Linters / checks: `ruff`, `ty`, `rumdl` (Markdown)
-- Python requirement: **3.14+** (see `pyproject.toml`)"
+- Python requirement: **3.14+** (see `pyproject.toml`)
 
 ## Safe startup (quick)
 
@@ -18,13 +18,22 @@ A small, self-contained Python collection of tools/tests focused on strict docum
 2. Install project and dev tools (use your environment manager):
    - Example: `uv run -m pip install -e .[dev]` (or follow your org's workflow)
 3. Run tests: `uv run -m pytest`
-4. Run type and lint checks: `uv run --locked ty check`, `ruff check .`, `rumdl .`
+4. Run type and lint checks: `uv run --locked ty check`, `ruff check .`, `uv run rumdl check .`
 
 ## What to expect in this repo
 
 - `tests/` — unit & meta-tests (see `test_docstrings.py` which enforces docstring coverage)
 - `scripts/` — utility scripts
 - `pyproject.toml` — authoritative configuration for tests, linters, and dev deps
+
+## Test standard (ledger-style)
+
+- Preserve top-level policy tests (`tests/test_module_exports.py`, `tests/test_docstrings.py`).
+- Keep shared fixture wiring in `tests/conftest.py` with AnyIO backend and `pytest_plugins`.
+- Keep typed reusable helpers in `tests/utils.py`.
+- Mirror source layout for behavior tests where practical (`tests/scripts_/`).
+- Ensure test modules include module docstrings and `__all__ = ()`.
+- For each behavior change, cover both happy path and failure path.
 
 ## Developer & agent guidelines
 
@@ -48,7 +57,7 @@ A small, self-contained Python collection of tools/tests focused on strict docum
 - Setup: `uv venv && .\\.venv\\Scripts\\Activate.ps1`
 - Install: `uv run -m pip install -e .[dev]`
 - Tests: `uv run -m pytest` (defaults in `pyproject.toml` set coverage and parallel options)
-- Lint/type: `ruff check . --fix`, `uv run --locked ty check`, `rumdl .`
+- Lint/type: `ruff check . --fix`, `uv run --locked ty check`, `uv run rumdl check .`
 - Asset handling: use `scripts/split.py` and `scripts/unsplit.py` for chunked files in `arts/` — do not manually recombine or add binary chunks without coordination.
 
 ## Agent-specific rules & guardrails
