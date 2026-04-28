@@ -38,7 +38,9 @@ async def test_main_reassembles_file_from_chunks(tmp_path: PathLike[str]) -> Non
 
 
 @pytest.mark.anyio
-async def test_main_stops_when_chunk_sequence_has_a_gap(tmp_path: PathLike[str]) -> None:
+async def test_main_stops_when_chunk_sequence_has_a_gap(
+    tmp_path: PathLike[str],
+) -> None:
     """A missing middle chunk should stop concatenation at the first gap."""
     target = Path(tmp_path) / "gap.xcf"
     await Path(f"{target}.001").write_bytes(b"ONE")

@@ -128,7 +128,9 @@ async def test_parser_invoke_raises_for_missing_input(
     with pytest.raises(ExceptionGroup) as exc_info:
         await ns.invoke(ns)
 
-    assert any(isinstance(error, FileNotFoundError) for error in exc_info.value.exceptions)
+    assert any(
+        isinstance(error, FileNotFoundError) for error in exc_info.value.exceptions
+    )
 
 
 def test_module_main_invokes_run(run_module_helper: RunModuleHelper) -> None:
