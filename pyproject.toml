@@ -1,5 +1,5 @@
 [build-system]
-requires = ["uv_build>=0.11.0,<0.12"]
+requires = ["uv_build>=0.11.32,<0.12"]
 build-backend = "uv_build"
 
 [project]
@@ -9,7 +9,7 @@ requires-python = ">=3.14.0"
 description = "Arts"
 license = { file = "LICENSE.txt" }
 readme = "README.md"
-dependencies = ["anyio>=4.14.1", "asyncer>=0.0.18", "asyncstdlib>=3.13.0"]
+dependencies = ["anyio>=4.14.2", "asyncer>=0.0.18", "asyncstdlib>=3.13.0"]
 
 [project.optional-dependencies]
 uvloop = [
@@ -24,14 +24,14 @@ repository = "https://github.com/polyipseity/arts.git"
 
 [dependency-groups]
 dev = [
-  "hypothesis>=6.155.7",
-  "prek>=0.4.5",
+  "hypothesis>=6.161.5",
+  "prek>=0.4.11",
   "pytest>=9.1.1",
   "pytest-cov>=7.0.0",
   "pytest-xdist>=3.8.0",
-  "ruff>=0.15.20",
-  "rumdl>=0.2.23",
-  "ty>=0.0.54",
+  "ruff>=0.16.0",
+  "rumdl>=0.2.43",
+  "ty>=0.0.63",
 ]
 uvloop = ["arts-857de042-6481-4c22-947c-a76d12fdfb68[uvloop]"]
 
